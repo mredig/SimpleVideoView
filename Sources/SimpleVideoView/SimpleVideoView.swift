@@ -13,8 +13,6 @@ public class SimpleVideoView: UIView {
 
 	private let playerLayer: AVPlayerLayer
 
-//	private var observers: Set<NSKeyValueObservation> = []
-
 	private var looper: AVPlayerLooper?
 
 	public init() {
@@ -24,17 +22,10 @@ public class SimpleVideoView: UIView {
 		attachLayer()
 	}
 
-
 	public convenience init(player: AVPlayer, gravity: AVLayerVideoGravity = .resizeAspect) {
 		self.init()
 		self.player = player
 		self.gravity = gravity
-
-//		let readyOb = playerLayer.observe(\.isReadyForDisplay) { [weak self] (player, change) in
-//			guard player.isReadyForDisplay else { return }
-//			self?.attachLayer()
-//		}
-//		observers.insert(readyOb)
 	}
 
 	public convenience init(playerItem: AVPlayerItem, gravity: AVLayerVideoGravity = .resizeAspect) {
@@ -53,10 +44,6 @@ public class SimpleVideoView: UIView {
 		fatalError("init(coder:) has not been implemented")
 	}
 
-//	deinit {
-//		observers.forEach { $0.invalidate() }
-//	}
-
 	public override func layoutSubviews() {
 		super.layoutSubviews()
 		let rect = bounds
@@ -68,6 +55,9 @@ public class SimpleVideoView: UIView {
 		layer.addSublayer(playerLayer)
 	}
 
+	/**
+	 Offloads the responsibility of retaining the AVPlayerLooper to the view. The looper will then be retained for at least as long as the view is in memory or it is replaced by another looper.
+	 */
 	public func retainLooper(_ looper: AVPlayerLooper) {
 		self.looper = looper
 	}
