@@ -12,6 +12,8 @@ public class SimpleVideoView: UIView {
 
 	private var observers: Set<NSKeyValueObservation> = []
 
+	private var looper: AVPlayerLooper?
+
 	public init(player: AVPlayer, gravity: AVLayerVideoGravity = .resizeAspect) {
 		self.player = player
 		self.playerLayer = AVPlayerLayer(player: player)
@@ -23,6 +25,18 @@ public class SimpleVideoView: UIView {
 			self?.attachLayer()
 		}
 		observers.insert(readyOb)
+	}
+
+	public convenience init(playerItem: AVPlayerItem, gravity: AVLayerVideoGravity = .resizeAspect) {
+		let player = AVPlayer(playerItem: playerItem)
+		self.init(player: player, gravity: gravity)
+	}
+
+	public convenience init(loopingPlayerItem: AVPlayerItem, gravity: AVLayerVideoGravity = .resizeAspect) {
+		let queuePlayer = AVQueuePlayer()
+		let looper = AVPlayerLooper(player: queuePlayer, templateItem: loopingPlayerItem)
+		self.init(player: queuePlayer, gravity: gravity)
+		self.looper = looper
 	}
 
 	@available(*, unavailable)

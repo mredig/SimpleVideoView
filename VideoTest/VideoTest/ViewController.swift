@@ -20,14 +20,11 @@ class ViewController: UIViewController {
 		let url = URL(string: "https://media0.giphy.com/media/CvxQBnh6Vuu8zNbOG5/giphy.mp4?cid=686a81dcc61fkmsqf271r0msb2lt9vxr8glugwgm3dej8s3y&rid=giphy.mp4&ct=g")!
 		let url2 = URL(string: "https://media4.giphy.com/media/bUm7IqjufH5eoFN6bG/giphy.mp4?cid=686a81dcc61fkmsqf271r0msb2lt9vxr8glugwgm3dej8s3y&rid=giphy.mp4&ct=g")!
 
-		let queue = AVQueuePlayer()
-		let item = AVPlayerItem(url: url2)
-		let looper = AVPlayerLooper(player: queue, templateItem: item)
-		self.looper = looper
+		let playerItem = AVPlayerItem(url: url2)
 
-		let videoView = SimpleVideoView(player: queue, gravity: .resizeAspect)
+		let videoView = SimpleVideoView(loopingPlayerItem: playerItem)
 		videoView.translatesAutoresizingMaskIntoConstraints = false
-		queue.play()
+		videoView.player.play()
 
 		view.addSubview(videoView)
 
