@@ -33,8 +33,7 @@ public class SimpleVideoView: UIView {
 	}
 
 	public convenience init(loopingPlayerItem: AVPlayerItem, gravity: AVLayerVideoGravity = .resizeAspect) {
-		let queuePlayer = AVQueuePlayer()
-		let looper = AVPlayerLooper(player: queuePlayer, templateItem: loopingPlayerItem)
+		let (queuePlayer, looper) = Self.loopingPlayer(for: loopingPlayerItem)
 		self.init(player: queuePlayer, gravity: gravity)
 		self.looper = looper
 	}
@@ -57,5 +56,14 @@ public class SimpleVideoView: UIView {
 	private func attachLayer() {
 		guard playerLayer.superlayer == nil else { return }
 		layer.addSublayer(playerLayer)
+	}
+
+	/**
+	 Returns both the player object and a reference to the looper. The looper must be retained in memory.
+	 */
+	public static func loopingPlayer(for loopingPlayerItem: AVPlayerItem) -> (player: AVQueuePlayer, looperReference: AVPlayerLooper) {
+		let queuePlayer = AVQueuePlayer()
+		let looper = AVPlayerLooper(player: queuePlayer, templateItem: loopingPlayerItem)
+		return (queuePlayer, looper)
 	}
 }
