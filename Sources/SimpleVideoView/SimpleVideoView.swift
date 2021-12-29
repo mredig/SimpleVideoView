@@ -2,7 +2,10 @@ import UIKit
 import AVFoundation
 
 public class SimpleVideoView: UIView {
-	public let player: AVPlayer
+	public var player: AVPlayer? {
+		get { playerLayer.player }
+		set { playerLayer.player = newValue }
+	}
 	public var gravity: AVLayerVideoGravity {
 		get { playerLayer.videoGravity }
 		set { playerLayer.videoGravity = newValue }
@@ -10,21 +13,28 @@ public class SimpleVideoView: UIView {
 
 	private let playerLayer: AVPlayerLayer
 
-	private var observers: Set<NSKeyValueObservation> = []
+//	private var observers: Set<NSKeyValueObservation> = []
 
 	private var looper: AVPlayerLooper?
 
-	public init(player: AVPlayer, gravity: AVLayerVideoGravity = .resizeAspect) {
-		self.player = player
-		self.playerLayer = AVPlayerLayer(player: player)
+	public init() {
+		self.playerLayer = AVPlayerLayer(player: nil)
 		super.init(frame: .zero)
+
+		attachLayer()
+	}
+
+
+	public convenience init(player: AVPlayer, gravity: AVLayerVideoGravity = .resizeAspect) {
+		self.init()
+		self.player = player
 		self.gravity = gravity
 
-		let readyOb = playerLayer.observe(\.isReadyForDisplay) { [weak self] (player, change) in
-			guard player.isReadyForDisplay else { return }
-			self?.attachLayer()
-		}
-		observers.insert(readyOb)
+//		let readyOb = playerLayer.observe(\.isReadyForDisplay) { [weak self] (player, change) in
+//			guard player.isReadyForDisplay else { return }
+//			self?.attachLayer()
+//		}
+//		observers.insert(readyOb)
 	}
 
 	public convenience init(playerItem: AVPlayerItem, gravity: AVLayerVideoGravity = .resizeAspect) {
@@ -43,9 +53,9 @@ public class SimpleVideoView: UIView {
 		fatalError("init(coder:) has not been implemented")
 	}
 
-	deinit {
-		observers.forEach { $0.invalidate() }
-	}
+//	deinit {
+//		observers.forEach { $0.invalidate() }
+//	}
 
 	public override func layoutSubviews() {
 		super.layoutSubviews()
@@ -56,6 +66,10 @@ public class SimpleVideoView: UIView {
 	private func attachLayer() {
 		guard playerLayer.superlayer == nil else { return }
 		layer.addSublayer(playerLayer)
+	}
+
+	public func retainLooper(_ looper: AVPlayerLooper) {
+		self.looper = looper
 	}
 
 	/**

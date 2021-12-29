@@ -24,7 +24,7 @@ class ViewController: UIViewController {
 
 		let videoView = SimpleVideoView(loopingPlayerItem: playerItem)
 		videoView.translatesAutoresizingMaskIntoConstraints = false
-		videoView.player.play()
+		videoView.player?.play()
 
 		view.addSubview(videoView)
 
@@ -34,6 +34,17 @@ class ViewController: UIViewController {
 			view.safeAreaLayoutGuide.topAnchor.constraint(equalTo: videoView.topAnchor),
 			view.safeAreaLayoutGuide.bottomAnchor.constraint(equalTo: videoView.bottomAnchor),
 		])
+
+		Task {
+			try await Task.sleep(nanoseconds: 3_000_000_000)
+			let playerItem = AVPlayerItem(url: url)
+
+			let newLoop = SimpleVideoView.loopingPlayer(for: playerItem)
+
+			videoView.player = newLoop.player
+			videoView.retainLooper(newLoop.looperReference)
+			newLoop.player.play()
+		}
 	}
 
 
